@@ -5,15 +5,14 @@ int main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_ERROR);
 
-	std::string path = "resources/video.mp4";
-	cv::VideoCapture cap(path);
+	cv::VideoCapture cap(0);
 	cv::Mat img;
 
 	while (true) {
 		cap.read(img);
 
 		cv::imshow("image", img);
-		cv::waitKey(10);
+		cv::waitKey(1);
 	}
 	return 0;
 }
