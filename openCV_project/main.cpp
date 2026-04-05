@@ -12,7 +12,16 @@ void GetContours(Mat imgDil, Mat img)
 	std::vector<Vec4i> hierarchy;
 
 	findContours(imgDil, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
-	drawContours(img, contours, -1, Scalar(255, 0, 255), 4);
+	//drawContours(img, contours, -1, Scalar(255, 0, 255), 4);
+
+	for (int i = 0; i < contours.size(); i++) {
+		int area = contourArea(contours[i]);
+		std::cout << area << std::endl;
+
+		if (area > 1000) {
+			drawContours(img, contours, i, Scalar(255, 0, 255), 2);
+		}
+	}
 }
 
 int main()
