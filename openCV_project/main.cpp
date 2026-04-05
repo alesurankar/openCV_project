@@ -9,22 +9,16 @@ int main()
 
 	std::string path = "resources/gal2.png";
 	Mat img = imread(path);
-	Mat imgGray, imgBlur, imgCanny, imgDil, imgErode;
+	Mat imgResize1;
+	Mat imgResize2;
 
-	cvtColor(img, imgGray, COLOR_BGR2GRAY);
-	GaussianBlur(img, imgBlur, Size(7,7), 5, 0);
-	Canny(imgBlur, imgCanny, 25, 75);
-
-	Mat kernel = getStructuringElement(MORPH_RECT, Size(5, 5));
-	dilate(imgCanny, imgDil, kernel);
-	erode(imgDil, imgErode, kernel);
+	//std::cout << img.size << "/n";
+	resize(img, imgResize1, Size(640, 640));
+	resize(img, imgResize2, Size(), 0.4, 0.4);
 
 	imshow("image", img);
-	imshow("image Gray", imgGray);
-	imshow("image Blur", imgBlur);
-	imshow("image Canny", imgCanny);
-	imshow("image Dilation", imgDil);
-	imshow("image Erode", imgErode);
+	imshow("image Resize1", imgResize1);
+	imshow("image Resize2", imgResize2);
 	waitKey(0);
 	return 0;
 }
