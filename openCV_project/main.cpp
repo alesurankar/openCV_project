@@ -2,30 +2,27 @@
 #include <iostream>
 
 using namespace cv;
-float w = 150;
-float h = 350;
 
-Mat matrix, imgWarp;
+Mat imgHSV, mask;
+int hmin = 20, smin = 20, vmin = 150;
+int hmax = 200, smax = 255, vmax = 255;
 
 int main()
 {
 	utils::logging::setLogLevel(utils::logging::LOG_LEVEL_ERROR);
 
-	std::string path = "resources/gal2.png";
+	std::string path = "resources/lambo.png";
 	Mat img = imread(path);
 
-	Point2f src[4] = { {529,142}, {771,190}, {405,395}, {674,457} };
-	Point2f dst[4] = { {0.0f,0.0f}, {w,0.0f}, {0.0f,h}, {w,h} };
+	cvtColor(img, imgHSV, COLOR_BGR2HSV);
 
-	matrix = getPerspectiveTransform(src, dst);
-	warpPerspective(img, imgWarp, matrix, Point(w, h));
-
-	for (int i = 0; i < 4; i++) {
-		circle(img, src[i], 10, Scalar(0, 0, 255), FILLED);
-	}
+	Scalar lower(hmin, smin, vmin);
+	Scalar upper(hmax, smax, vmax);
+	inRange(imgHSV, lower, upper, mask);
 
 	imshow("image", img);
-	imshow("image Warp", imgWarp);
+	imshow("image HSV", imgHSV);
+	imshow("image Mask", mask);
 	waitKey(0);
 	return 0;
 }
