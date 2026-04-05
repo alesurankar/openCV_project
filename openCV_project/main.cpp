@@ -5,11 +5,16 @@ int main()
 {
 	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_ERROR);
 
-	std::string path = "resources/gal2.png";
-	cv::Mat img = cv::imread(path);
-	cv::imshow("image", img);
-	cv::waitKey(0);
+	std::string path = "resources/video.mp4";
+	cv::VideoCapture cap(path);
+	cv::Mat img;
 
+	while (true) {
+		cap.read(img);
+
+		cv::imshow("image", img);
+		cv::waitKey(10);
+	}
 	return 0;
 }
 
