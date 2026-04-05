@@ -2,20 +2,30 @@
 #include <iostream>
 
 using namespace cv;
+float w = 150;
+float h = 350;
+
+Mat matrix, imgWarp;
 
 int main()
 {
 	utils::logging::setLogLevel(utils::logging::LOG_LEVEL_ERROR);
 
-	Mat img(512, 512, CV_8UC3, Scalar(250,250,250));
+	std::string path = "resources/gal2.png";
+	Mat img = imread(path);
 
-	circle(img, Point(256,256), 155, Scalar(0, 69, 255), FILLED);
-	rectangle(img, Point(130, 226), Point(382, 286), Scalar(255, 255, 255), FILLED);
-	line(img, Point(130, 296), Point(382, 296), Scalar(255, 255, 255), 2);
-	
-	putText(img, "some text", Point(137, 262), FONT_HERSHEY_DUPLEX, 1.3, Scalar(0, 69, 255), 2);
+	Point2f src[4] = { {529,142}, {771,190}, {405,395}, {674,457} };
+	Point2f dst[4] = { {0.0f,0.0f}, {w,0.0f}, {0.0f,h}, {w,h} };
+
+	matrix = getPerspectiveTransform(src, dst);
+	warpPerspective(img, imgWarp, matrix, Point(w, h));
+
+	for (int i = 0; i < 4; i++) {
+		circle(img, src[i], 10, Scalar(0, 0, 255), FILLED);
+	}
 
 	imshow("image", img);
+	imshow("image Warp", imgWarp);
 	waitKey(0);
 	return 0;
 }
