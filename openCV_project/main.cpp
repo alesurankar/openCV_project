@@ -1,18 +1,24 @@
 #include <opencv2/opencv.hpp>
 #include <iostream>
 
+using namespace cv;
+
 int main()
 {
-	cv::utils::logging::setLogLevel(cv::utils::logging::LOG_LEVEL_ERROR);
+	utils::logging::setLogLevel(utils::logging::LOG_LEVEL_ERROR);
 
 	std::string path = "resources/gal2.png";
-	cv::Mat img = cv::imread(path);
-	cv::Mat imgGray;
+	Mat img = imread(path);
+	Mat imgGray;
+	Mat imgBlur;
 
-	cv::cvtColor(img, imgGray, cv::COLOR_BGR2GRAY);
-	cv::imshow("image", img);
-	cv::imshow("image Gray", imgGray);
-	cv::waitKey(0);
+	cvtColor(img, imgGray, COLOR_BGR2GRAY);
+	GaussianBlur(img, imgBlur, Size(7,7), 5, 0);
+
+	imshow("image", img);
+	imshow("image Gray", imgGray);
+	imshow("image Blur", imgBlur);
+	waitKey(0);
 	return 0;
 }
 
