@@ -1,11 +1,19 @@
 #include <opencv2/opencv.hpp>
+#include <vector>
 #include <iostream>
 
 using namespace cv;
 
-Mat imgHSV, mask;
-int hmin = 10, smin = 45, vmin = 156;
-int hmax = 70, smax = 255, vmax = 255;
+Mat imgGray, imgBlur, imgCanny, imgDil, imgErode;
+
+void GetContours(Mat imgDil, Mat img)
+{
+	std::vector<std::vector<Point>> contours;
+	std::vector<Vec4i> hierarchy;
+
+	findContours(imgDil, contours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+	drawContours(img, contours, -1, Scalar(255, 0, 255), 4);
+}
 
 int main()
 {
@@ -13,27 +21,21 @@ int main()
 
 	std::string path = "resources/lambo.png";
 	Mat img = imread(path);
-	cvtColor(img, imgHSV, COLOR_BGR2HSV);
 
-	namedWindow("Trackbars", (640, 200));
-	createTrackbar("Hue Min", "Trackbars", &hmin, 179);
-	createTrackbar("Sat Min", "Trackbars", &smin, 255);
-	createTrackbar("Val Min", "Trackbars", &vmin, 255);
+	cvtColor(img, imgGray, COLOR_BGR2GRAY);
+	GaussianBlur(imgGray, imgBlur, Size(3, 3), 3, 0);
+	Canny(imgBlur, imgCanny, 25, 75);
+	Mat kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
+	dilate(imgCanny, imgDil, kernel);
 
-	createTrackbar("Hue Max", "Trackbars", &hmax, 179);
-	createTrackbar("HSat Max", "Trackbars", &smax, 255);
-	createTrackbar("Val Max", "Trackbars", &vmax, 255);
+	GetContours(imgDil, img);
 
-	while (true) {
-		Scalar lower(hmin, smin, vmin);
-		Scalar upper(hmax, smax, vmax);
-		inRange(imgHSV, lower, upper, mask);
-
-		imshow("image", img);
-		imshow("image HSV", imgHSV);
-		imshow("image Mask", mask);
-		waitKey(1);
-	}
+	imshow("image", img);
+	//imshow("image Gray", imgGray);
+	//imshow("image Blur", imgBlur );
+	//imshow("image Canny", imgCanny);
+	//imshow("image Dil", imgDil);
+	waitKey(0);
 	return 0;
 }
 
