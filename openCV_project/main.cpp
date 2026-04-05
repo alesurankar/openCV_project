@@ -18,8 +18,16 @@ void GetContours(Mat imgDil, Mat img)
 		int area = contourArea(contours[i]);
 		std::cout << area << std::endl;
 
+		std::vector<std::vector<Point>> conPoly(contours.size());
+		std::vector<Rect> boundRect(contours.size());
+
 		if (area > 1000) {
-			drawContours(img, contours, i, Scalar(255, 0, 255), 2);
+			float peri = arcLength(contours[i], true);
+			approxPolyDP(contours[i], conPoly[i], 0.02*peri,true);
+			drawContours(img, conPoly, i, Scalar(255, 0, 255), 2);
+			std::cout << conPoly[i].size() << std::endl;
+			boundRect[i] = boundingRect(conPoly[i]);
+			rectangle(img, boundRect[i].tl(), boundRect[i].br(), Scalar(255, 255, 255), 5);
 		}
 	}
 }
